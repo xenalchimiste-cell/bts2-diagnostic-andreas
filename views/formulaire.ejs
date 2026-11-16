@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title><%= titre %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1><%= titre %></h1>
+  <p><a href="/">← retour à la liste</a></p>
+
+  <% if (erreur) { %>
+    <p class="erreur"><%= erreur %></p>
+  <% } %>
+
+  <form method="post" action="<%= action %>">
+    <p>
+      <label>Nom<br>
+        <input type="text" name="nom" value="<%= salle.nom %>">
+      </label>
+    </p>
+    <p>
+      <label>Capacité (personnes)<br>
+        <input type="text" name="capacite" value="<%= salle.capacite %>">
+      </label>
+    </p>
+    <p>
+      <label>Étage<br>
+        <input type="text" name="etage" value="<%= salle.etage %>">
+      </label>
+    </p>
+    <p>Équipements :</p>
+    <p>
+      <label><input type="checkbox" name="videoprojecteur" <%= salle.videoprojecteur ? 'checked' : '' %>> vidéoprojecteur</label><br>
+      <label><input type="checkbox" name="ecran" <%= salle.ecran ? 'checked' : '' %>> écran</label><br>
+      <label><input type="checkbox" name="tableau_blanc" <%= salle.tableau_blanc ? 'checked' : '' %>> tableau blanc</label><br>
+      <label><input type="checkbox" name="visioconference" <%= salle.visioconference ? 'checked' : '' %>> visioconférence</label>
+    </p>
+    <p>
+      <button type="submit">Enregistrer</button>
+    </p>
+  </form>
+</body>
+</html>

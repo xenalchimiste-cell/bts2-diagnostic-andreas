@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>SalleLib - salles</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>SalleLib</h1>
+  <p>Liste des salles</p>
+
+  <% if (erreur) { %>
+    <p class="erreur"><%= erreur %></p>
+  <% } %>
+
+  <form method="get" action="/" class="recherche">
+    <label>Capacité min.
+      <input type="text" name="capacite_min" value="<%= capacite_min %>" placeholder="ex: 8">
+    </label>
+    <button type="submit">Rechercher</button>
+    <a href="/">Tout afficher</a>
+  </form>
+
+  <p><a href="/ajouter">+ Ajouter une salle</a></p>
+
+  <table>
+    <tr>
+      <th>Nom</th>
+      <th>Capacité</th>
+      <th>Étage</th>
+      <th>Équipements</th>
+      <th></th>
+    </tr>
+    <% if (salles.length === 0) { %>
+      <tr>
+        <td colspan="5">Aucune salle</td>
+      </tr>
+    <% } %>
+    <% salles.forEach(function (s) { %>
+      <tr>
+        <td><%= s.nom %></td>
+        <td><%= s.capacite %></td>
+        <td><%= s.etage %></td>
+        <td><%= s.equipements %></td>
+        <td>
+          <a href="/modifier/<%= s.id %>">modifier</a>
+          <form method="post" action="/supprimer/<%= s.id %>" class="inline" onsubmit="return confirm('Supprimer <%= s.nom %> ?');">
+            <button type="submit">supprimer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>
