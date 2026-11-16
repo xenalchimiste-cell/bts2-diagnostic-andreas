@@ -1,39 +1,40 @@
-# SalleLib (partie 1)
+# SalleLib
 
-Applis pour lister / ajouter / modifier / supprimer les salles.
+Projet fait en PHP avec une base de données SQLite.
 
-## Prérequis
+## Partie 1 - Les salles
 
-- Node.js
-- npm
+### Ce que j'ai fait
 
-## Lancer le projet
+- `schema.sql` : crée la table `salle` et ajoute 6 salles de test.
+- `db.php` : la connexion à la base, et une fonction `verifier()` qui contrôle ce qu'on tape dans le formulaire (nom vide, capacité pas un nombre ou pas plus grande que 0, étage pas un nombre, nom déjà pris).
+- `index.php` : la page d'accueil qui affiche toutes les salles dans un tableau, avec une recherche par capacité minimale.
+- `ajouter.php` : pour ajouter une salle.
+- `modifier.php` : pour modifier une salle.
+- `supprimer.php` : pour supprimer une salle.
+- `formulaire.php` : le formulaire utilisé par ajouter et modifier.
+- `header.php` et `style.css` : le haut de la page et un peu de style.
 
-Dans le dossier :
+Les équipements (vidéoprojecteur, écran, tableau blanc, visioconférence) sont des cases à cocher, enregistrées en 0 ou 1 dans la base.
 
-```
-npm install
-```
+Si une saisie est fausse, la page affiche un message en rouge et ne plante pas.
 
-La base sqlite se crée toute seule au premier lancement (à partir de `schema.sql`).
+### Lancer le projet
 
-Sinon à la main :
+Il faut avoir PHP (avec pdo_sqlite) et sqlite3 installés.
+
+1. Créer la base :
 
 ```
 sqlite3 salles.db < schema.sql
 ```
 
-Ensuite :
+2. Lancer le serveur :
 
 ```
-node app.js
+php -S localhost:8000
 ```
 
-Ouvrir http://localhost:3000 dans le navigateur.
+3. Ouvrir http://localhost:8000 dans le navigateur.
 
-## Fichiers
-
-- `schema.sql` : tables + 6 salles de test
-- `app.js` : serveur express
-- `views/` : pages html
-- `salles.db` : base (créée au lancement, pas dans git)
+Pour remettre la base à zéro, il suffit de relancer la commande de l'étape 1.
