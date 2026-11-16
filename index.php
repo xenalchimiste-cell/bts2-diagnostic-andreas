@@ -1,41 +1,48 @@
 <?php
 require 'db.php';
 
-$min = isset($_GET['min']) ? trim($_GET['min']) : '';
+$min = '';
 $erreur = '';
 
-if ($min != '') {
-    if (!ctype_digit($min)) {
-        $erreur = "La capacité minimale doit être un nombre entier positif.";
-        $salles = $db->query('SELECT * FROM salle ORDER BY nom')->fetchAll();
-    } else {
-        $req = $db->prepare('SELECT * FROM salle WHERE capacite >= ? ORDER BY capacite');
-        $req->execute([$min]);
-        $salles = $req->fetchAll();
-    }
-} else {
-    $salles = $db->query('SELECT * FROM salle ORDER BY nom')->fetchAll();
+if (isset($_GET['min'])) {
+    $min = $_GET['min'];
 }
 
-include 'header.php';
+if ($min == '') {
+    $req = $db->query('SELECT * FROM salle ORDER BY nom');
+} else if (!ctype_digit($min)) {
+    $erreur = 'La capacité doit être un nombre entier.';
+    $req = $db->query('SELECT * FROM salle ORDER BY nom');
+} else {
+    $req = $db->prepare('SELECT * FROM salle WHERE capacite >= ? ORDER BY capacite');
+    $req->execute([$min]);
+}
+
+$salles = $req->fetchAll();
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SalleLib</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<?php if (isset($_GET['message'])) { ?>
-    <p class="ok"><?= htmlspecialchars($_GET['message']) ?></p>
-<?php } ?>
-
-<?php if ($erreur != '') { ?>
-    <p class="erreur"><?= $erreur ?></p>
-<?php } ?>
+<h1>SalleLib</h1>
 
 <form method="get" action="index.php">
     Capacité minimale :
-    <input type="text" name="min" value="<?= htmlspecialchars($min) ?>">
+    <input type="text" name="min" value="<?php echo htmlspecialchars($min); ?>">
     <button type="submit">Rechercher</button>
     <a href="index.php">Tout afficher</a>
 </form>
 
-<p><a class="bouton" href="ajouter.php">+ Ajouter une salle</a></p>
+<?php if ($erreur != '') { ?>
+    <p class="erreur"><?php echo $erreur; ?></p>
+<?php } ?>
+
+<p><a href="ajouter.php">Ajouter une salle</a></p>
 
 <table>
     <tr>
@@ -43,26 +50,32 @@ include 'header.php';
         <th>Capacité</th>
         <th>Étage</th>
         <th>Équipements</th>
-        <th>Actions</th>
+        <th></th>
     </tr>
     <?php foreach ($salles as $salle) { ?>
         <tr>
-            <td><?= htmlspecialchars($salle['nom']) ?></td>
-            <td><?= $salle['capacite'] ?></td>
-            <td><?= $salle['etage'] ?></td>
+            <td><?php echo htmlspecialchars($salle['nom']); ?></td>
+            <td><?php echo $salle['capacite']; ?></td>
+            <td><?php echo $salle['etage']; ?></td>
             <td>
                 <?php
-                $equipements = [];
-                if ($salle['videoprojecteur']) $equipements[] = 'Vidéoprojecteur';
-                if ($salle['ecran']) $equipements[] = 'Écran';
-                if ($salle['tableau_blanc']) $equipements[] = 'Tableau blanc';
-                if ($salle['visio']) $equipements[] = 'Visioconférence';
-                echo count($equipements) > 0 ? implode(', ', $equipements) : 'Aucun';
+                if ($salle['videoprojecteur'] == 1) {
+                    echo 'Vidéoprojecteur<br>';
+                }
+                if ($salle['ecran'] == 1) {
+                    echo 'Écran<br>';
+                }
+                if ($salle['tableau_blanc'] == 1) {
+                    echo 'Tableau blanc<br>';
+                }
+                if ($salle['visio'] == 1) {
+                    echo 'Visioconférence<br>';
+                }
                 ?>
             </td>
             <td>
-                <a href="modifier.php?id=<?= $salle['id'] ?>">Modifier</a>
-                <a href="supprimer.php?id=<?= $salle['id'] ?>" onclick="return confirm('Supprimer cette salle ?')">Supprimer</a>
+                <a href="modifier.php?id=<?php echo $salle['id']; ?>">Modifier</a>
+                <a href="supprimer.php?id=<?php echo $salle['id']; ?>">Supprimer</a>
             </td>
         </tr>
     <?php } ?>

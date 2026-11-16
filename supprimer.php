@@ -1,9 +1,7 @@
 <?php
 require 'db.php';
 
-$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $req = $db->prepare('DELETE FROM salle WHERE id = ?');
-$req->execute([$id]);
+$req->execute([$_GET['id']]);
 
-header('Location: index.php?message=' . urlencode('La salle a été supprimée.'));
-exit;
+header('Location: index.php');
